@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, head, disk_size, i, j, seek_operations = 0;
+
+    printf("Enter the number of requests: ");
+    scanf("%d", &n);
+
+    int requests[n];
+    printf("Enter the requests: ");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &requests[i]);
+    }
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    printf("Enter the disk size: ");
+    scanf("%d", &disk_size);
+
+    // Sort requests
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - i - 1; j++)
+            if (requests[j] > requests[j + 1]) {
+                int temp = requests[j];
+                requests[j] = requests[j + 1];
+                requests[j + 1] = temp;
+            }
+
+    // Calculate seek operations
+    for (i = 0; i < n; i++) {
+        if (requests[i] >= head) {
+            seek_operations += abs(head - requests[i]);
+            head = requests[i];
+        }
+    }
+    seek_operations += abs(head - (disk_size - 1));
+    head = 0;
+    for (i = 0; i < n; i++) {
+        if (requests[i] < head) {
+            seek_operations += abs(head - requests[i]);
+            head = requests[i];
+        }
+    }
+
+    printf("Total Seek Operations: %d\n", seek_operations);
+    return 0;
+}
