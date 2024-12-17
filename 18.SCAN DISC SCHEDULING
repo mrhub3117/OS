@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, head, direction;
+    printf("Enter the number of requests: ");
+    scanf("%d", &n);
+
+    int requests[n];
+    printf("Enter the requests: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &requests[i]);
+    }
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    printf("Enter the direction (0 for left, 1 for right): ");
+    scanf("%d", &direction);
+
+    int seek_count = 0;
+    int distance, cur_track;
+    int left[n], right[n];
+    int left_size = 0, right_size = 0;
+    int seek_sequence[n + 1];
+    int index = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (requests[i] < head) {
+            left[left_size++] = requests[i];
+        } else {
+            right[right_size++] = requests[i];
+        }
+    }
+
+    qsort(left, left_size, sizeof(int), (int (*)(const void *, const void *))cmpfunc);
+    qsort(right, right_size, sizeof(int), (int (*)(const void *, const void *))cmpfunc);
+
+    if (direction == 0) {
+        for (int i = left_size - 1; i >= 0; i--) {
+            cur_track = left[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+        for (int i = 0; i < right_size; i++) {
+            cur_track = right[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+    } else {
+        for (int i = 0; i < right_size; i++) {
+            cur_track = right[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+        for (int i = left_size - 1; i >= 0; i--) {
+            cur_track = left[i];
+            seek_sequence[index++] = cur_track;
+            distance = abs(cur_track - head);
+            seek_count += distance;
+            head = cur_track;
+        }
+    }
+
+    printf("Seek Sequence: ");
+    for (int i = 0; i < index; i++) {
+        printf("%d ", seek_sequence[i]);
+    }
+    printf("\nTotal Seek Count: %d\n", seek_count);
+
+    return 0;
+}
+
+int cmpfunc(const int *a, const int *b) {
+    return (*a - *b);
+}
