@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+int main() {
+    int n, frames, pages[30], temp[10], freq[10], faults = 0;
+    int flag1, flag2, pos, min_freq;
+
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
+
+    printf("Enter the reference string: ");
+    for (int i = 0; i < n; ++i) {
+        scanf("%d", &pages[i]);
+    }
+
+    printf("Enter number of frames: ");
+    scanf("%d", &frames);
+
+    for (int i = 0; i < frames; ++i) {
+        temp[i] = -1;
+        freq[i] = 0;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        flag1 = flag2 = 0;
+
+        for (int j = 0; j < frames; ++j) {
+            if (temp[j] == pages[i]) {
+                freq[j]++;
+                flag1 = flag2 = 1;
+                break;
+            }
+        }
+
+        if (flag1 == 0) {
+            for (int j = 0; j < frames; ++j) {
+                if (temp[j] == -1) {
+                    faults++;
+                    temp[j] = pages[i];
+                    freq[j] = 1;
+                    flag2 = 1;
+                    break;
+                }
+            }
+        }
+
+        if (flag2 == 0) {
+            min_freq = freq[0];
+            pos = 0;
+            for (int j = 1; j < frames; ++j) {
+                if (freq[j] < min_freq) {
+                    min_freq = freq[j];
+                    pos = j;
+                }
+            }
+            faults++;
+            temp[pos] = pages[i];
+            freq[pos] = 1;
+        }
+    }
+
+    printf("Total Page Faults = %d\n", faults);
+
+    return 0;
+}
