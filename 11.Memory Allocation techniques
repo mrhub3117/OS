@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int size;
+    int allocated;
+} Partition;
+
+typedef struct {
+    int size;
+    int allocated_partition;
+} Task;
+
+int main() {
+    int num_partitions, num_tasks, method;
+
+
+    printf("Enter the number of partitions: ");
+    scanf("%d", &num_partitions);
+    Partition partitions[num_partitions];
+
+    
+    for (int i = 0; i < num_partitions; i++) {
+        partitions[i].allocated = 0;
+        printf("Partition %d size: ", i + 1);
+        scanf("%d", &partitions[i].size);
+    }
+
+    
+    printf("Enter the number of tasks: ");
+    scanf("%d", &num_tasks);
+    Task tasks[num_tasks];
+
+    
+    for (int i = 0; i < num_tasks; i++) {
+        printf("Task %d size: ", i + 1);
+        scanf("%d", &tasks[i].size);
+        tasks[i].allocated_partition = -1;
+    }
+
+    
+    printf("Choose allocation method (1: First-Fit, 2: Best-Fit, 3: Worst-Fit): ");
+    scanf("%d", &method);
+
+  
+    for (int i = 0; i < num_tasks; i++) {
+        int index = -1;
+        for (int j = 0; j < num_partitions; j++) {
+            if (tasks[i].size <= partitions[j].size && !partitions[j].allocated) {
+                if (method == 1) { // First-Fit
+                    index = j;
+                    break;
+                } else if (method == 2) { // Best-Fit
+                    if (index == -1 || partitions[j].size < partitions[index].size) {
+                        index = j;
+                    }
+                } else if (method == 3) { // Worst-Fit
+                    if (index == -1 || partitions[j].size > partitions[index].size) {
+                        index = j;
+                    }
+                }
+            }
+        }
+        if (index != -1) {
+            printf("Task %d allocated to Partition %d\n", i + 1, index + 1);
+            partitions[index].allocated = 1;
+            tasks[i].allocated_partition = index + 1;
+        } else {
+            printf("Task %d could not be allocated\n", i + 1);
+        }
+    }
+
+    return 0;
+}
