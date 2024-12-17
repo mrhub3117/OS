@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int main() {
+    int n, head, seek_count = 0, distance, cur_track;
+    int queue[20];
+
+    printf("Enter the number of requests: ");
+    scanf("%d", &n);
+
+    printf("Enter the request sequence: ");
+    for (int i = 0; i < n; ++i) {
+        scanf("%d", &queue[i]);
+    }
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &head);
+
+    printf("\nSequence of disk access:\n");
+    for (int i = 0; i < n; ++i) {
+        cur_track = queue[i];
+        distance = abs(cur_track - head);
+        seek_count += distance;
+        head = cur_track;
+        printf("%d ", cur_track);
+    }
+
+    printf("\n\nTotal seek operations = %d\n", seek_count);
+
+    return 0;
+}
